@@ -18,8 +18,14 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('getevents', 'EventsController@getEvent')->name('events.get');
+Route::get('gettools', 'ToolsController@gettools');
+Route::get('userevents', 'EventsController@userEvent');
+Route::get('gettoolsname','ToolsController@gettoolsname');
+Route::get('getuserid', 'UserController@getUserId');
 
 
 Route::resource('events', 'EventsController');
+Route::resource('users', 'UserController');
+Route::resource('tools', 'ToolsController');
 
