@@ -110,6 +110,6 @@ class ToolsController extends Controller
     public function gettools(){
         
         $tools = DB::table('tools')->get();
-        return json_encode($tools);
+        return ($tools);
     }
 }

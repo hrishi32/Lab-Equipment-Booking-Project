@@ -22,7 +22,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::get(['id','name','email']);
-        return Response()->json($users);
+        return ($users);
     }
 
     /**

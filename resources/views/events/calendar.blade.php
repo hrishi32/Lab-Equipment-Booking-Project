@@ -10,21 +10,21 @@ use App\Http\Controllers\UserController;
 <meta charset='utf-8' />
 <!-- <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/sketchy/bootstrap.min.css"> -->
 
-<link href='full_calendar_scheduler/lib/fullcalendar.min.css' rel='stylesheet' />
-<link href='full_calendar_scheduler/lib/fullcalendar.print.min.css' rel='stylesheet' media='print' />
-<link href='full_calendar_scheduler/scheduler.min.css' rel='stylesheet' />
-<script src='full_calendar_scheduler/lib/moment.min.js'></script>
-<script src='full_calendar_scheduler/lib/jquery.min.js'></script>
-<script src='full_calendar_scheduler/lib/fullcalendar.min.js'></script>
-<script src='full_calendar_scheduler/scheduler.min.js'></script>
+<link href="{{asset ('full_calendar_scheduler/lib/fullcalendar.min.css') }}" rel='stylesheet' />
+<link href="{{asset ('full_calendar_scheduler/lib/fullcalendar.print.min.css') }}" rel='stylesheet' media='print' />
+<link href="{{asset ('full_calendar_scheduler/scheduler.min.css') }}" rel='stylesheet' />
+<script src="{{asset ('full_calendar_scheduler/lib/moment.min.js') }}"></script>
+<script src="{{asset ('full_calendar_scheduler/lib/jquery.min.js') }}"></script>
+<script src="{{asset ('full_calendar_scheduler/lib/fullcalendar.min.js') }}"></script>
+<script src="{{asset ('full_calendar_scheduler/scheduler.min.js') }}"></script>
 
-<script src='full_calendar_scheduler/lib/jquery-ui.min.js'></script> 
+<script src="{{asset ('full_calendar_scheduler/lib/jquery-ui.min.js') }}"></script> 
 
-<link href='calendar/index.css' rel='stylesheet' />
-<link href='css/jquery.datetimepicker.css' rel='stylesheet' />
-<script src='js/jquery.datetimepicker.full.min.js'></script>
-<script src="js/js.cookie/js.cookie.js"></script>
-<script src='js/dialog.js'></script>
+<link href="{{asset ('calendar/index.css') }}" rel='stylesheet' />
+<link href="{{asset ('css/jquery.datetimepicker.css') }}" rel='stylesheet' />
+<script src="{{asset ('js/jquery.datetimepicker.full.min.js') }}"></script>
+<script src="{{asset ('js/js.cookie/js.cookie.js') }}"></script>
+<script src="{{asset ('js/dialog.js') }}"></script>
 
 
 <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" rel="stylesheet">  
@@ -164,8 +164,14 @@ use App\Http\Controllers\UserController;
         }
     });
   });
-
-</script>
+  
+  </script>
+  <script>
+    $('#event_status').fadeTo(2000,500).slideUp(500,function(){
+      $('#event_status').slideUp(500);
+    });
+    
+  </script>
 
 <style>
 
@@ -177,7 +183,7 @@ use App\Http\Controllers\UserController;
   }
 
   #calendar {
-    max-width: 1000px;
+    max-width: 1200px;
     margin: 0 auto;
   }
   /* #event_form {
@@ -203,20 +209,14 @@ use App\Http\Controllers\UserController;
         {{ session('status') }}
     </div>
 @endif
-<script>
-  $('#event_status').fadeTo(2000,500).slideUp(500,function(){
-    $('#event_status').slideUp(500);
-  });
-  
-</script>
 <div id="sidebar">
     <button id="datepicker"><?php echo 'Date Picker'; ?></button>
     
     <div id="eventContent" title="Event Details" class="alert-danger">
-      Booked By : <span id="userName"></span><br>
-      Tool : <span id="toolName"></span><br>
-      Start: <span id="startTime"></span><br>
-      End: <span id="endTime"></span><br>
+      <b>Booked By :</b> <span id="userName"></span><br>
+      <b>Tool :</b> <span id="toolName"></span><br>
+      <b>Start :</b> <span id="startTime"></span><br>
+      <b>End :</b> <span id="endTime"></span><br>
   </div><br>
 
   <div id='event_form'>

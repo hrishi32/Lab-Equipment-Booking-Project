@@ -9,7 +9,9 @@ use Illuminate\Support\Collection;
 use Validator;
 use App\Events;
 use App\User;
+use App\Tools;
 use Auth;
+use Carbon\Carbon;
 
 class EventsController extends Controller
 {
@@ -60,15 +62,16 @@ class EventsController extends Controller
         $event = new Events;
         $event->title = $request['title'];
         $event->eventDate = $request['eventDate'];
-        $event->startTime=$request['startTime'].':00';
+        $event->startTime=$request['startTime'].':01';
         // $event->endTime=$request['endTime'].':00';
         $duration = $request['duration'];
+        $duration = $duration-1;
         // echo $duration.' ';
-        // echo $event->startTime.' ';
+        echo $event->startTime.' ';
         // echo strtotime($event->startTime).' ';
         // echo date('h:i:s', strtotime($event->startTime)).' ';
 
-        $event->endTime = date('h:i:s', strtotime('+'.$duration.' min', strtotime($event->startTime)));
+        $event->endTime = date('h:i:s', strtotime('+'.$duration.' min '.'58 sec', strtotime($event->startTime)));
         // echo date('Y-m-d', strtotime($request['eventDate']));
         if($event->startTime > $event->endTime){
             $event->endDate = date('Y-m-d', strtotime('+1 day', strtotime($request['eventDate'])));
@@ -78,9 +81,15 @@ class EventsController extends Controller
         }
         // echo $event->endTime;
         $event->pid = $request['pid'];
-        // $event->resourceId = $request['tl_id'];
         $event->tl_id = $request['tl_id'];
-        
+
+        if($event->eventDate.' '.$event->startTime < Carbon::now()){
+            $msg =  "You are still living in the past. Please select appropriate date.";
+            echo $msg;
+            return Redirect('events')->with('status', $msg);
+        }
+        // echo ($event->eventDate.' '.$event->startTime.'    '.Carbon::now());
+
         $check = Events::
                   where ([
                       ['tl_id','=',$event->tl_id],
@@ -91,11 +100,10 @@ class EventsController extends Controller
                     ->whereBetween ('startTime', [$event->startTime, $event->endTime])
                     ->orwhereBetween ('endTime', [$event->startTime, $event->endTime]);
                 })
-                // ->where ('')
                 // ->get()
                 ->doesntExist()
                 ;
-        // echo $check;
+        echo $check;
         if($check){
             $event->save();
             \Session::flash('Success','Event Added successfuly.');
@@ -174,9 +182,18 @@ class EventsController extends Controller
             // $e['color'] = $eve->color;
             array_push($events, $e);
         }
-        return ($events);
+        return $events;
+        // return view('dashboard.table', ['events' => $events]);
     }
-
+    public function allEvents(){
+        $events = DB::table('tools')
+                      ->LeftJoin('events', 'events.tl_id', '=', 'tools.id')
+                      ->get();
+        // return ($events);
+        $tools = app('App\Http\Controllers\ToolsController')->gettools();
+        $users = app('App\Http\Controllers\UserController')->index();
+        return view('dashboard.table', ['events' => $events, 'tools' => $tools, 'users' => $users]);
+    }
     public function userEvent(){
             $events = DB::table('events')
                             ->where('pid','=',Auth::user()->id)
