@@ -183,7 +183,8 @@ use App\Http\Controllers\UserController;
   }
 
   #calendar {
-    max-width: 1200px;
+    max-width: 900px;
+    height:900px;
     margin: 0 auto;
   }
   /* #event_form {

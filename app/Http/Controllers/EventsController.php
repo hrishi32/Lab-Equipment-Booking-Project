@@ -50,7 +50,10 @@ class EventsController extends Controller
     {
         $validator = \Validator::make($request->all(),[
             'title' => 'required',
-            'eventDate' => 'required',  
+            'eventDate' => 'required',
+            'tl_id' => 'required',
+            'pid' => 'required',
+            'startTime' => 'required',
         ]);
 
         if($validator->fails()){
@@ -66,29 +69,31 @@ class EventsController extends Controller
         // $event->endTime=$request['endTime'].':00';
         $duration = $request['duration'];
         $duration = $duration-1;
-        // echo $duration.' ';
         echo $event->startTime.' ';
-        // echo strtotime($event->startTime).' ';
-        // echo date('h:i:s', strtotime($event->startTime)).' ';
-
-        $event->endTime = date('h:i:s', strtotime('+'.$duration.' min '.'58 sec', strtotime($event->startTime)));
-        // echo date('Y-m-d', strtotime($request['eventDate']));
+        
+        $event->endTime = date('G:i:s', strtotime('+'.$duration.' min '.'58 sec', strtotime($event->startTime)));
         if($event->startTime > $event->endTime){
             $event->endDate = date('Y-m-d', strtotime('+1 day', strtotime($request['eventDate'])));
         }
         else{
             $event->endDate = $request['eventDate'];
         }
-        // echo $event->endTime;
         $event->pid = $request['pid'];
         $event->tl_id = $request['tl_id'];
-
-        if($event->eventDate.' '.$event->startTime < Carbon::now()){
-            $msg =  "You are still living in the past. Please select appropriate date.";
+        
+        // echo date('h:i:s', strtotime($event->startTime)).' ';
+        // echo date('Y-m-d', strtotime($request['eventDate']));
+        
+        // echo $duration.' ';
+        // echo strtotime($event->startTime).' ';
+        // echo $event->endTime.' ';
+        // echo ($event->eventDate.' '.$event->startTime.'    '.Carbon::now()->subMinutes(120));
+        
+        if($event->eventDate.' '.$event->startTime < Carbon::now()->subMinutes(120)){
+            $msg =  "You are still living in the past. Please select appropriate time.";
             echo $msg;
             return Redirect('events')->with('status', $msg);
         }
-        // echo ($event->eventDate.' '.$event->startTime.'    '.Carbon::now());
 
         $check = Events::
                   where ([
@@ -175,11 +180,9 @@ class EventsController extends Controller
             $e['id']=$eve->id;
             $username = User::where('id','=',$eve->pid)->value('name');
             $e['title']=$username;
-            $e['start']=$eve->eventDate
-            .' '.$eve->startTime;
+            $e['start']=$eve->eventDate.' '.$eve->startTime;
             $e['end']=$eve->endDate.' '.$eve->endTime;
             $e['resourceId']=$eve->tl_id;
-            // $e['color'] = $eve->color;
             array_push($events, $e);
         }
         return $events;
@@ -195,9 +198,11 @@ class EventsController extends Controller
         return view('dashboard.table', ['events' => $events, 'tools' => $tools, 'users' => $users]);
     }
     public function userEvent(){
-            $events = DB::table('events')
+            $events = DB::table('tools')
+                            ->LeftJoin('events', 'events.tl_id', '=', 'tools.id')
                             ->where('pid','=',Auth::user()->id)
                             ->get();
-            return ($events);
+            // return ($events);
+        return view('dashboard.myBooking', ['events' => $events]);
     }
 }

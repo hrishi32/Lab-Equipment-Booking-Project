@@ -51,7 +51,7 @@ Auth::routes();
 Route::get('getevents', 'EventsController@getEvent')->name('events.get');
 Route::get('/dashboard/table', 'EventsController@allEvents');
 Route::get('gettools', 'ToolsController@gettools');
-Route::get('userevents', 'EventsController@userEvent');
+Route::get('/dashboard/myBooking', 'EventsController@userEvent');
 Route::get('gettoolsname','ToolsController@gettoolsname');
 Route::get('getuserid', 'UserController@getUserId');
 

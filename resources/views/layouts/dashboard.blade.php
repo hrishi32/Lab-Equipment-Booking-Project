@@ -67,6 +67,12 @@
                         <p>Table List</p>
                     </a>
                 </li>
+                <li @yield('myBookingactive')>
+                    <a href="/dashboard/myBooking">
+                        <i class="ti-view-list-alt"></i>
+                        <p>My Bookings</p>
+                    </a>
+                </li>
                 <!-- <li @yield('useractive')>
                     <a href="/dashboard/user">
                         <i class="ti-user"></i>
