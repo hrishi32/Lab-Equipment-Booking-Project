@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('dashboard.calendar');
 });
 Route::get('/dashboard', function () {
     return view('dashboard.dashboard');
@@ -43,7 +43,7 @@ Route::get('/dashboard/typography', function () {
 });
 
 Route::get('/home', function () {
-    return view('dashboard.dashboard');
+    return view('dashboard.calendar');
 });
 Auth::routes();
 

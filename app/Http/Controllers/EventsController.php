@@ -153,23 +153,25 @@ class EventsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Events  $events
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Events $events)
+    public function update(Request $request, $id)
     {
-        //
+        
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Events  $events
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Events $events)
+    public function destroy($id)
     {
-        //
+        $event = Events::findOrFail($id);
+        $event->delete();
+        echo "successfully deleted";
     }
 
     public function getEvent(){

@@ -9,7 +9,7 @@ use App\Http\Controllers\UserController;
 <head>
 <meta charset='utf-8' />
 <!-- <link rel="stylesheet" type="text/css" href="https://bootswatch.com/4/sketchy/bootstrap.min.css"> -->
-
+<meta name="csrf-token" content="{{ csrf_token() }}">
 <link href="{{asset ('full_calendar_scheduler/lib/fullcalendar.min.css') }}" rel='stylesheet' />
 <link href="{{asset ('full_calendar_scheduler/lib/fullcalendar.print.min.css') }}" rel='stylesheet' media='print' />
 <link href="{{asset ('full_calendar_scheduler/scheduler.min.css') }}" rel='stylesheet' />
@@ -110,7 +110,6 @@ use App\Http\Controllers\UserController;
         eventLimit: true, // allow "more" link when too many events
 
         select: function(start, end, jsEvent, view, resource) {
-          
           // dlgopen('events/create?' + '&starttimeh=' + start.get('hours') + '&toolid=' + resource.id +
           // '&starttimem=' + start.get('minutes') + '&date=' + start.format('YYYY-MM-DD') // + '&catid=' + 0
           //  ,'_blank'  , 775, 375);
@@ -134,7 +133,21 @@ use App\Http\Controllers\UserController;
         //   console.log(doc);
         }
       },
-   
+      eventClick: function (event, element, resource) {
+          console.log("eventClick");
+              // var x = $('input[name=event_id]').val();
+              // alert(x);
+              var resource = $("#calendar").fullCalendar("getResourceById",event.resourceId);
+              // $(element).find(".fc-list-item-title").append("<div>"+resource.title+"</div>");
+              $('#toolName').html(resource.title);
+              $('#userName').html(event.title);
+              $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
+              $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
+
+              $("#deleteEventSubmit").show();
+              if(event.title== '{{$username}}' ) $('input[name=event_id]').val(event.id);
+              if(event.title != '{{$username}}' ) $("#deleteEventSubmit").hide();
+      },
     resourceAreaWidth: "25%",
     resourceLabelText: 'Equipment Name',
     
@@ -150,27 +163,15 @@ use App\Http\Controllers\UserController;
           }
         },
         eventRender: function (event, element) {
-          element.attr('href', 'javascript:void(0);');
+          // element.attr('href', 'javascript:void(0);');
           
-          element.click(function() {
-              // alert(event.resourceId);
-              var resource = $("#calendar").fullCalendar("getResourceById",event.resourceId);
-              $(element).find(".fc-list-item-title").append("<div>"+resource.title+"</div>");
-              $('#toolName').html(resource.title);
-              $('#userName').html(event.title);
-              $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
-              $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
-          });
-        }
+          // element.click(function() {
+              
+          // });
+        },
     });
   });
   
-  </script>
-  <script>
-    $('#event_status').fadeTo(2000,500).slideUp(500,function(){
-      $('#event_status').slideUp(500);
-    });
-    
   </script>
 
 <style>
@@ -210,6 +211,7 @@ use App\Http\Controllers\UserController;
         {{ session('status') }}
     </div>
 @endif
+
 <div id="sidebar">
     <button id="datepicker"><?php echo 'Date Picker'; ?></button>
     
@@ -218,7 +220,16 @@ use App\Http\Controllers\UserController;
       <b>Tool :</b> <span id="toolName"></span><br>
       <b>Start :</b> <span id="startTime"></span><br>
       <b>End :</b> <span id="endTime"></span><br>
-  </div><br>
+      <form method="post" action="{{url('events')}}" id="eventDeleteForm">
+        @csrf
+        <div class="form-group">
+          {!! Form::hidden('event_id', null, ['class' => 'form-control']) !!}
+        </div>
+        <button  class="btn btn-success" id="deleteEventSubmit">Delete Booking</button>
+      </form>
+  </div>
+  
+  <br>
 
   <div id='event_form'>
 
@@ -267,5 +278,171 @@ use App\Http\Controllers\UserController;
     <div id='calendar'></div>
 </div>
 
+<!-- <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal" id="open" hidden>Open Modal</button>
+<form method="post" action="{{url('events')}}" id="form"> -->
+        <!-- @csrf -->
+  <!-- Modal -->
+  <!-- <div class="modal" tabindex="-1" role="dialog" id="myModal">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    	<div class="alert alert-danger" style="display:none"></div>
+      <div class="modal-header">
+      	
+        <h5 class="modal-title">Lab Slot Booking</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="Event_id">Booking Id:</label>
+              <input type="number" class="form-control" name="_event_id" id="_event_id" hidden>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="Event_date">Booking Date:</label>
+              <input type="date" class="form-control" name="event_date" id="event_date">
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-4">
+              <label for="Event_time">startTime:</label>
+              <input type="time" class="form-control" name="event_time" id="event_time" value="">
+            </div>
+          </div>
+          <div class="row">
+              <div class="form-group col-md-4">
+                <label for="Event_duration">Event Duration:</label>
+                <select class="form-control" id="event_duration" name="event_duration">
+                  <option value="30" selected="selected">30 min</option>
+                  <option value="60">1 hr</option>
+                  <option value="90">1 hr 30 min</option>
+                  <option value="120">2 hr</option>
+                </select>
+              </div>
+          </div>
+      </div>
+      <div class="modal-footer">
+      	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button  class="btn btn-success" id="editEventSubmit">Update Booking</button>
+        <button  class="btn btn-success" id="_deleteEventSubmit">Delete Booking</button>
+        </div>
+    </div>
+  </div>
+</div>
+  </form> -->
+  <script>
+    $('#event_status').fadeTo(2000,500).slideUp(500,function(){
+      $('#event_status').slideUp(500);
+    });
+  </script>
+        <script>
+         jQuery(document).ready(function(){
+             
+            jQuery('#deleteEventSubmit').click(function(e){
+               e.preventDefault();
+               $.ajaxSetup({
+                  headers: {
+                      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                  }
+              });
+              var id = $('input[name=event_id]').val();
+              console.log("deleteEventSubmitted ")
+              if(id==''){
+                alert('Select a booking in order to delete it.');
+              }
+              else{
+               jQuery.ajax({
+                  url: "{{url('/events')}}"+'/'+id,
+                  method: 'post',
+                  data: {
+                     id:jQuery('#event_id').val(),
+                     _method:'DELETE',
+                     _token: '{{csrf_token()}}',
+                    //  name: jQuery('#name').val(),
+                    //  club: jQuery('#club').val(),
+                    //  country: jQuery('#country').val(),
+                    //  score: jQuery('#score').val(),
+                  },
+                  success: function(result){
+
+                    console.log(result);
+                  	if(result.errors)
+                  	{
+                  		// jQuery('.alert-danger').html('');
+
+                  		// jQuery.each(result.errors, function(key, value){
+                  		// 	jQuery('.alert-danger').show();
+                  		// 	jQuery('.alert-danger').append('<li>'+value+'</li>');
+                  		// });
+                  	}
+                  	else
+                  	{
+                  		// jQuery('.alert-danger').hide();
+                  		// $('#open').hide();
+                  		// $('#myModal').modal('hide');
+                  	}
+                      $('#calendar').fullCalendar('removeEvents', id);
+                      $('#toolName').html('');
+                      $('#userName').html('');
+                      $("#startTime").html('');
+                      $("#endTime").html('');
+                  }
+                  // error: function(result){
+                  //   alert(result);
+                  // }
+                  });
+              }
+               });
+              //  jQuery('#editEventSubmit').click(function(e){
+              //  e.preventDefault();
+              //  $.ajaxSetup({
+              //     headers: {
+              //         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+              //     }
+              // });
+              // var id = $('input[name=event_id]').val();
+              // // alert(id);
+              //  jQuery.ajax({
+              //     url: "{{url('/events')}}"+'/'+id,
+              //     method: 'post',
+              //     data: {
+              //        _method:'PUT',
+              //        _token: '{{csrf_token()}}',
+              //        id:jQuery('#event_id').val(),
+              //        name: jQuery('#name').val(),
+              //       //  club: jQuery('#club').val(),
+              //       //  country: jQuery('#country').val(),
+              //       //  score: jQuery('#score').val(),
+              //     },
+              //     success: function(result){
+
+              //       // alert(result);
+              //     	if(result.errors)
+              //     	{
+              //     		jQuery('.alert-danger').html('');
+
+              //     		jQuery.each(result.errors, function(key, value){
+              //     			jQuery('.alert-danger').show();
+              //     			jQuery('.alert-danger').append('<li>'+value+'</li>');
+              //     		});
+              //     	}
+              //     	else
+              //     	{
+              //     		jQuery('.alert-danger').hide();
+              //     		$('#open').hide();
+              //     		$('#myModal').modal('hide');
+              //         $('#calendar').fullCalendar('removeEvents', id);
+              //     	}
+              //     }
+              //     // error: function(result){
+              //     //   alert(result);
+              //     // }
+              //     });
+              //  });
+            });
+      </script>
 </body>
 </html>
