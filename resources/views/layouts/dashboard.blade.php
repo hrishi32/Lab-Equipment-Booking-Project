@@ -27,8 +27,8 @@
 
 
     <!--  Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Muli:400,300' rel='stylesheet' type='text/css'>
+    <link href="{{ asset('http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('https://fonts.googleapis.com/css?family=Muli:400,300')}}" rel='stylesheet' type='text/css'>
     <link href="{{ asset('assets/css/themify-icons.css') }}" rel="stylesheet">
     
 </head>
@@ -240,13 +240,13 @@
 	<script src="{{ asset('assets/js/bootstrap-checkbox-radio.js') }}"></script>
 
 	<!--  Charts Plugin -->
-	<script src="{{ asset('assets/js/chartist.min.js') }}"></script>
+	<!-- <script src="{{ asset('assets/js/chartist.min.js') }}"></script> -->
 
     <!--  Notifications Plugin    -->
     <script src="{{ asset('assets/js/bootstrap-notify.js') }}"></script>
 
     <!--  Google Maps Plugin    -->
-    <script type="text/javascript" src="{{ asset('https://maps.googleapis.com/maps/api/js') }}"></script>
+    <!-- <script type="text/javascript" src="{{ asset('https://maps.googleapis.com/maps/api/js') }}"></script> -->
 
     <!-- Paper Dashboard Core javascript and methods for Demo purpose -->
 	<script src="{{ asset('assets/js/paper-dashboard.js') }}"></script>

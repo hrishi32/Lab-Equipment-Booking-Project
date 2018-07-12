@@ -45,6 +45,9 @@ Route::get('/dashboard/typography', function () {
 Route::get('/home', function () {
     return view('dashboard.calendar');
 });
+Route::get('/myBookings', function () {
+    return view('events.booking');
+});
 Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('home');
@@ -52,6 +55,9 @@ Route::get('getevents', 'EventsController@getEvent')->name('events.get');
 Route::get('/dashboard/table', 'EventsController@allEvents');
 Route::get('gettools', 'ToolsController@gettools');
 Route::get('/dashboard/myBooking', 'EventsController@userEvent');
+Route::get('/dashboard/myBooking/download', 'EventsController@downloadPDF');
+Route::get('/dashboard/myBooking/postPDF', 'EventsController@postPDFprint');
+Route::get('/mybookings', 'EventsController@booking');
 Route::get('gettoolsname','ToolsController@gettoolsname');
 Route::get('getuserid', 'UserController@getUserId');
 
