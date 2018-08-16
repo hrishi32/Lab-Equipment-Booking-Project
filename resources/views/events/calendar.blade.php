@@ -103,7 +103,7 @@ use App\Http\Controllers\UserController;
 
         navLinks: true, // can click day/week names to navigate views
         selectable: true,
-        defaultView: 'timelineDay',
+        // defaultView: 'timelineDay',
         defaultTimedEventDuration: '00:30:00',
         editable: false,
         eventOverlap: false,
@@ -118,6 +118,12 @@ use App\Http\Controllers\UserController;
            $('input[name=pid]').val(<?php echo $userid; ?>);
            $('input[name=eventDate]').val(start.format('YYYY-MM-DD'));
            $('input[name=startTime]').val(start.format('HH:mm'));
+
+          $('#toolName').html('');
+          $('#userName').html('');
+          $("#startTime").html('');
+          $("#endTime").html('');
+          $("#deleteEventSubmit").hide();
           //  var x = $('input[name=startTime]').val();
           //  alert(x)
         },
@@ -255,6 +261,10 @@ use App\Http\Controllers\UserController;
     '60' => '1 hr',
     '90' => '1 hr 30 min',
     '120'=> '2 hr',
+    '150'=> '2 hr 30 min',
+    '180'=> '3 hr',
+    '210'=> '3 hr 30 min',
+    '240'=> '4 hr',
     ), '30', ['class' => 'form-control']) !!}
     </div>
     <!-- <div class="form-group">
