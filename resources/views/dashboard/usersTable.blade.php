@@ -1,56 +1,48 @@
 @extends('layouts.dashboard')
-@section('tableactive', 'class=active')
+@section('userTableactive', 'class=active')
 
 @section('content')
+
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
+                    
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Bookings Table</h4>
-                                <p class="category">List of all lab slots bookings.</p>
+                                <h4 class="title">Users Table</h4>
+                                <p class="category">List of all users.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped" id="eventTable">
+                                <table class="table table-hover" id="userTable">
+                                    <a name="usertt"></a>
                                     <thead>
-                                        <th>ID</th>
-                                        <th>Equipment</th>
-                                        <th>Booked By</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>EndTime</th>
-                                        <th>EndDate</th>
+                                        <th>User ID</th>
+                                        <th>User Name</th>
+                                        <th>User Email</th>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        foreach($events as $e){
+                                        foreach($users as $e){
                                             echo '<tr>';
                                             echo '<td> '.$e->id.' </td>';
-                                            echo '<td> '.$e->tl_name.' </td>';
-                                            echo '<td> '.$e->title.' </td>';
-                                            echo '<td> '.$e->eventDate.' </td>';
-                                            echo '<td> '.$e->startTime.' </td>';
-                                            echo '<td> '.$e->endTime.' </td>';
-                                            echo '<td> '.$e->endDate.' </td>';
+                                            echo '<td> '.$e->name.' </td>';
+                                            echo '<td> '.$e->email.' </td>';
                                             echo '</tr>';
                                             }
                                             ?>
                                     </tbody>
                                     <tfoot>
-                                        <th>ID</th>
-                                        <th>Equipment</th>
-                                        <th>Booked By</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>EndTime</th>
-                                        <th>EndDate</th>
+                                        <th>User ID</th>
+                                        <th>User Name</th>
+                                        <th>User Email</th>
                                     </tfoot>
                                 </table>
                             </div>
                         </div>
                         <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
                     </div>
+                    
                     
                 </div>
             </div>
@@ -76,8 +68,7 @@
  
 <script>
 $(document).ready( function () {
-    $('#eventTable').DataTable({
-        // "lengthMenu": [[25, 10, 50, -1], [25, 10, 50, "All"]]
+    $('#userTable').DataTable({
         dom: 'Bfrtip',
         buttons: [
             {
@@ -99,8 +90,8 @@ $(document).ready( function () {
             'pdfHtml5',
             
         ],
-        paging: true,
-        // scrollY: 500,
+        paging: false,
+        // scrollY: 400,
         // ordering: true,
         select: true
     });

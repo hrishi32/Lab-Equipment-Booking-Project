@@ -1,57 +1,49 @@
 @extends('layouts.dashboard')
-@section('tableactive', 'class=active')
+@section('toolTableactive', 'class=active')
 
 @section('content')
+
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
+                    
                     <div class="col-md-12">
                         <div class="card">
                             <div class="header">
-                                <h4 class="title">Bookings Table</h4>
-                                <p class="category">List of all lab slots bookings.</p>
+                                <h4 class="title">Equipments Table</h4>
+                                <p class="category">List of all equipments.</p>
                             </div>
                             <div class="content table-responsive table-full-width">
-                                <table class="table table-striped" id="eventTable">
+                                <table class="table table-hover" id="toolTable">
+                                    <a name="tooltt"></a>
                                     <thead>
-                                        <th>ID</th>
-                                        <th>Equipment</th>
-                                        <th>Booked By</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>EndTime</th>
-                                        <th>EndDate</th>
+                                        <th>Equipment ID</th>
+                                        <th>Equipment Name</th>
+                                        <th>Equipment Description</th>
+                                        <th>Date Added</th>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        foreach($events as $e){
+                                        foreach($tools as $e){
                                             echo '<tr>';
                                             echo '<td> '.$e->id.' </td>';
                                             echo '<td> '.$e->tl_name.' </td>';
-                                            echo '<td> '.$e->title.' </td>';
-                                            echo '<td> '.$e->eventDate.' </td>';
-                                            echo '<td> '.$e->startTime.' </td>';
-                                            echo '<td> '.$e->endTime.' </td>';
-                                            echo '<td> '.$e->endDate.' </td>';
+                                            echo '<td> '.$e->tl_desc.' </td>';
+                                            echo '<td> '.$e->created_at.' </td>';
                                             echo '</tr>';
                                             }
                                             ?>
                                     </tbody>
                                     <tfoot>
-                                        <th>ID</th>
-                                        <th>Equipment</th>
-                                        <th>Booked By</th>
-                                        <th>Date</th>
-                                        <th>Time</th>
-                                        <th>EndTime</th>
-                                        <th>EndDate</th>
+                                        <th>Equipment ID</th>
+                                        <th>Equipment Name</th>
+                                        <th>Equipment Description</th>
                                     </tfoot>
                                 </table>
                             </div>
                         </div>
                         <div class="card-footer small text-muted">Updated yesterday at 11:59 PM</div>
                     </div>
-                    
                 </div>
             </div>
         </div>
@@ -76,8 +68,8 @@
  
 <script>
 $(document).ready( function () {
-    $('#eventTable').DataTable({
-        // "lengthMenu": [[25, 10, 50, -1], [25, 10, 50, "All"]]
+    
+    $('#toolTable').DataTable({
         dom: 'Bfrtip',
         buttons: [
             {
@@ -99,8 +91,8 @@ $(document).ready( function () {
             'pdfHtml5',
             
         ],
-        paging: true,
-        // scrollY: 500,
+        paging: false,
+        // scrollY: 400,
         // ordering: true,
         select: true
     });

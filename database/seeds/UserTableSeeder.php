@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-
+use Illuminate\Support\Facades\Hash;
 class UserTableSeeder extends Seeder
 {
     /**
@@ -12,13 +12,15 @@ class UserTableSeeder extends Seeder
     public function run()
     {
         DB::table('users')->insert([
-            'name'=>'Prabhakar Prasad',
-            'email'=>str_random(8).'@gmail.com',
-            'password'=>bcrypt('secret'),
+            'name'=>'Admin Admin',
+            'email'=>'admin@admin.com',
+            'password'=>Hash::make('admin123'),
+            'created_at'=>now(),
+            'admin'=>true,
         ]);
 
-        factory(App\User::class)
-                ->times(7)
-                ->create();
+        // factory(App\User::class)
+        //         ->times(7)
+        //         ->create();
     }
 }

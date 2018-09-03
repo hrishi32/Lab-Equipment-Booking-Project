@@ -12,6 +12,7 @@ class ToolsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('admin',['only'=>['create','store',]]);
     }
     /**
      * Display a listing of the resource.
@@ -20,7 +21,7 @@ class ToolsController extends Controller
      */
     public function index()
     {
-        //
+        return Tools::get();
     }
 
     /**
@@ -30,7 +31,7 @@ class ToolsController extends Controller
      */
     public function create()
     {
-        //
+        return view('tools.addEquip');
     }
 
     /**
@@ -41,7 +42,8 @@ class ToolsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $tools = Tools::create($request->all());
+        return view('tools.addEquip');
     }
 
     /**
@@ -52,7 +54,7 @@ class ToolsController extends Controller
      */
     public function show($id)
     {
-        //
+        return Tools::findOrFail($id);
     }
 
     /**
@@ -111,5 +113,17 @@ class ToolsController extends Controller
         
         $tools = DB::table('tools')->get();
         return ($tools);
+    }
+    public function allTools(){
+        return view("dashboard.toolsTable",['tools' => Tools::get()]);
+    }
+    public function toolsColor(){
+        $tools = Tools::get();
+        foreach ($tools as $tool){
+        	Tools::where('id', $tool->id)
+                    ->update(['color' => '#' . substr(str_shuffle('ABCDEF0123456789'), 0, 6)]);
+        }
+        // echo Tools::get();
+        return redirect("/");
     }
 }

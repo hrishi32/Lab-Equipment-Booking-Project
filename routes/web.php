@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('dashboard.calendar');
+    return view('/ldapLogin');
 });
 Route::get('/dashboard', function () {
     return view('dashboard.dashboard');
@@ -53,16 +53,31 @@ Auth::routes();
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::get('getevents', 'EventsController@getEvent')->name('events.get');
 Route::get('/dashboard/table', 'EventsController@allEvents');
+Route::get('/toolsTable', 'ToolsController@allTools');
+Route::get('/usersTable', 'UserController@allUsers');
 Route::get('gettools', 'ToolsController@gettools');
+Route::get('toolsColor', 'ToolsController@toolsColor');
+
 Route::get('/dashboard/myBooking', 'EventsController@userEvent');
-Route::get('/dashboard/myBooking/download', 'EventsController@downloadPDF');
-Route::get('/dashboard/myBooking/postPDF', 'EventsController@postPDFprint');
+// Route::get('/dashboard/myBooking/download', 'EventsController@downloadPDF');
+// Route::get('/dashboard/myBooking/postPDF', 'EventsController@postPDFprint');
 Route::get('/mybookings', 'EventsController@booking');
 Route::get('gettoolsname','ToolsController@gettoolsname');
 Route::get('getuserid', 'UserController@getUserId');
 
-
+// Route::post('/ldapAuth','UserController@ldapAuth');
+Route::get('/ldapLogin', function () {
+    return view('ldapLogin');
+});
+// Route::get('protected', ['middleware' => 
+//             ['auth', 'admin'], function(){
+//                 return "this page requires that you are logged in as admin.";
+//             }]);
 Route::resource('events', 'EventsController');
 Route::resource('users', 'UserController');
 Route::resource('tools', 'ToolsController');
+Route::get('admin', ['middleware' => 'admin', function () {
+    // return "Logged as Admin";
+    return Redirect("/");
+}]);
 

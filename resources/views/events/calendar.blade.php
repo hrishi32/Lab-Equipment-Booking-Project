@@ -1,7 +1,7 @@
 <?php
 use App\Http\Controllers\UserController;
-      $userid = UserController::getUserId();
-      $username = UserController::getUserName();
+      $userid = Auth::user()->id;
+      $username = Auth::user()->name;
 ?>
 
 <!DOCTYPE html>
@@ -63,9 +63,29 @@ use App\Http\Controllers\UserController;
       header: {
         left: 'prev,next today',
         center: 'title',
-        right: 'timelineDay,providerAgenda,listDay,providerAgenda2Day,providerAgendaWeek,month,timelineMonth,listWeek'
+        right: 'timelineDay,listDay,providerAgenda2Day,timelineWeek,listWeek,month,timelineMonth'
       },
       views: {
+          listDay: {
+            // options apply to basicWeek and agendaWeek views
+            slotLabelFormat: ['ddd, MMM D', 'H:mm'],
+            type: 'agenda',
+            duration: { days: 7 },
+            buttonText: "day List",
+            allDaySlot: false,
+            displayEventTime: true,
+            groupByResource: true,
+          },
+          listWeek: {
+            // options apply to basicWeek and agendaWeek views
+            slotLabelFormat: ['ddd, MMM D', 'H:mm'],
+            type: 'agenda',
+            duration: { days: 7 },
+            buttonText: "week List",
+            allDaySlot: false,
+            displayEventTime: true,
+            groupByResource: true,
+          },  
           providerAgendaWeek: {
             // options apply to basicWeek and agendaWeek views
             slotLabelFormat: ['ddd, MMM D', 'H:mm'],
@@ -77,7 +97,7 @@ use App\Http\Controllers\UserController;
             groupByResource: true,
           },
           providerAgenda2Day: {
-            type: 'agenda',
+            type: 'timeline',
             duration: { days: 2 },
             buttonText: title_agenda2,
             allDaySlot: false,
@@ -103,7 +123,7 @@ use App\Http\Controllers\UserController;
 
         navLinks: true, // can click day/week names to navigate views
         selectable: true,
-        // defaultView: 'timelineDay',
+        defaultView: 'timelineDay',
         defaultTimedEventDuration: '00:30:00',
         editable: false,
         eventOverlap: false,
@@ -148,7 +168,22 @@ use App\Http\Controllers\UserController;
               $('#toolName').html(resource.title);
               $('#userName').html(event.title);
               $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
-              $("#endTime").html(moment(event.end).format('MMM Do h:mm A'));
+              $("#endTime").html(moment(event.end).add(1,'seconds').format('MMM Do h:mm A'));
+
+              $("#deleteEventSubmit").show();
+              if(event.pid== '{{$userid}}' ) $('input[name=event_id]').val(event.id);
+              if(event.pid != '{{$userid}}' ) $("#deleteEventSubmit").hide();
+      },
+      eventMouseOver: function (event, element, resource) {
+          console.log("eventMouseOver");
+              // var x = $('input[name=event_id]').val();
+              // alert(x);
+              var resource = $("#calendar").fullCalendar("getResourceById",event.resourceId);
+              // $(element).find(".fc-list-item-title").append("<div>"+resource.title+"</div>");
+              $('#toolName').html(resource.title);
+              $('#userName').html(event.title);
+              $("#startTime").html(moment(event.start).format('MMM Do h:mm A'));
+              $("#endTime").html(moment(event.end).add(1,'seconds').format('MMM Do h:mm A'));
 
               $("#deleteEventSubmit").show();
               if(event.title== '{{$username}}' ) $('input[name=event_id]').val(event.id);
@@ -175,6 +210,13 @@ use App\Http\Controllers\UserController;
               
           // });
         },
+        eventAfterRender: function (event, element) {
+          // element.attr('href', 'javascript:void(0);');
+          
+          // element.click(function() {
+              
+          // });
+        },
     });
   });
   
@@ -190,8 +232,9 @@ use App\Http\Controllers\UserController;
   }
 
   #calendar {
-    max-width: 900px;
-    height:900px;
+    overflow-x: scroll;
+    max-width: 1000px;
+    height:1000px;
     margin: 0 auto;
   }
   /* #event_form {
@@ -212,9 +255,9 @@ use App\Http\Controllers\UserController;
 </head>
 <body>
 
-@if (session('status'))
+@if ( Session::has('status') )
     <div class="alert alert-success alert-dismissable" id="event_status">
-        {{ session('status') }}
+        {{ Session::get('status') }}
     </div>
 @endif
 
@@ -239,7 +282,7 @@ use App\Http\Controllers\UserController;
 
   <div id='event_form'>
 
-    {!! Form::model("events", ['action' => ['EventsController@store']])!!}
+    {!! Form::model("events", ['action' => ['EventsController@store'],'id'=>'eventSubmit' ])!!}
     <!-- {!! Form::token(); !!} -->
     
     
@@ -350,7 +393,111 @@ use App\Http\Controllers\UserController;
   </script>
         <script>
          jQuery(document).ready(function(){
-             
+          jQuery('#eventSubmit').submit(function(e){
+            $.ajaxSetup({
+              headers: {
+                'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+              }
+            });
+            e.preventDefault();
+              console.log("eventSubmitted ")
+               jQuery.ajax({
+                  url: "{{url('/events')}}",
+                  method: 'post',
+                  data: $(this).serialize(),
+                  success: function(result){
+
+                    console.log(result);
+                    alert(result);
+                    // console.log({{ Session::get('status') }});
+                  //   $('#event_status').fadeTo(2000,500).slideUp(500,function(){
+                  //   $('#event_status').slideUp(500);
+                  // });
+                    // demo.showNotification('top', 'left');
+                    // color = Math.floor((Math.random() * 4) + 1);
+                    // type = ['','info','success','warning','danger'];
+                    // $.notify({
+                    //     icon: "ti-gift",
+                    //     message: result
+
+                    //   },{
+                    //       type: type[color],
+                    //       timer: 2000,
+                    //       allow_dismiss: true,
+                    //       animate: {
+                    //           enter: 'animated fadeInDown',
+                    //           exit: 'animated fadeOutUp'
+                    //         },
+                    //       placement: {
+                    //           from: top,
+                    //           align: 'left'
+                    //       }
+                    //   });
+                      if(result.errors){
+                        
+                      }
+                      else{
+                        
+                      }
+                      $('#calendar').fullCalendar('refetchEvents');
+                      // $('#toolName').html('');
+                      // $('#userName').html('');
+                      // $("#startTime").html('');
+                      // $("#endTime").html('');
+                  
+                  // error: function(result){
+                  //   alert(result);
+                  // }
+                }
+                  });
+               });
+              //  jQuery('#editEventSubmit').click(function(e){
+              //  e.preventDefault();
+              //  $.ajaxSetup({
+              //     headers: {
+              //         'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+              //     }
+              // });
+              // var id = $('input[name=event_id]').val();
+              // // alert(id);
+              //  jQuery.ajax({
+              //     url: "{{url('/events')}}"+'/'+id,
+              //     method: 'post',
+              //     data: {
+              //        _method:'PUT',
+              //        _token: '{{csrf_token()}}',
+              //        id:jQuery('#event_id').val(),
+              //        name: jQuery('#name').val(),
+              //       //  club: jQuery('#club').val(),
+              //       //  country: jQuery('#country').val(),
+              //       //  score: jQuery('#score').val(),
+              //     },
+              //     success: function(result){
+
+              //       // alert(result);
+              //     	if(result.errors)
+              //     	{
+              //     		jQuery('.alert-danger').html('');
+
+              //     		jQuery.each(result.errors, function(key, value){
+              //     			jQuery('.alert-danger').show();
+              //     			jQuery('.alert-danger').append('<li>'+value+'</li>');
+              //     		});
+              //     	}
+              //     	else
+              //     	{
+              //     		jQuery('.alert-danger').hide();
+              //     		$('#open').hide();
+              //     		$('#myModal').modal('hide');
+              //         $('#calendar').fullCalendar('removeEvents', id);
+              //     	}
+              //     }
+              //     // error: function(result){
+              //     //   alert(result);
+              //     // }
+              //     });
+              //  });
+            // });
             jQuery('#deleteEventSubmit').click(function(e){
                e.preventDefault();
                $.ajaxSetup({
@@ -377,7 +524,7 @@ use App\Http\Controllers\UserController;
                     //  score: jQuery('#score').val(),
                   },
                   success: function(result){
-
+                    
                     console.log(result);
                   	if(result.errors)
                   	{
@@ -454,5 +601,10 @@ use App\Http\Controllers\UserController;
               //  });
             });
       </script>
+      <script src="{{ asset('assets/js/bootstrap-notify.js') }}"></script>
+	<script src="{{ asset('assets/js/bootstrap.min.js') }}" type="text/javascript"></script>
+
+
+
 </body>
 </html>

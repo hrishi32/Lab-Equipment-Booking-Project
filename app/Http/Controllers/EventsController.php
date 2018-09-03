@@ -89,10 +89,13 @@ class EventsController extends Controller
         // echo $event->endTime.' ';
         // echo ($event->eventDate.' '.$event->startTime.'    '.Carbon::now()->subMinutes(120));
         
+        $msg="";
         if($event->eventDate.' '.$event->startTime < Carbon::now()->subMinutes(120)){
             $msg =  "You are still living in the past. Please select appropriate time.";
-            echo $msg;
-            return Redirect('events')->with('status', $msg);
+            // echo $msg;
+            // return Redirect('events')->with('status', $msg);
+            // \Session::flash('status',$msg);          
+            // return $msg;
         }
 
         $check = Events::
@@ -108,22 +111,26 @@ class EventsController extends Controller
                 // ->get()
                 ->doesntExist()
                 ;
-        echo $check;
+        // echo $check;
         if($check){
             $event->save();
-            \Session::flash('Success','Event Added successfuly.');
-            echo $event;
             $msg = 'Event Added successfuly.';
+            // Redirect::back()->with('status', 'error|There was an error...');
+            // return \Session::flash('status',$msg);            
+            // echo $event;
+            
         }
         else{
             $msg =  "Chosen slot is not available.Please choose another timing.";
-            echo $msg;
+            // \Session::flash('status',$msg);          
         }
 
-        response()->json(['success'=>'Data is successfully added']);
+        // response()->json(['success'=>'Data is successfully added']);
         // echo "<script>window.close();</script>";
         // return Redirect('events');
-        return Redirect('events')->with('status', $msg);
+        // return Redirect('events')->with('status', $msg);
+        // \Session::flash('status',$msg);          
+        return $msg;
     }
 
     /**
@@ -185,19 +192,18 @@ class EventsController extends Controller
             $e['start']=$eve->eventDate.' '.$eve->startTime;
             $e['end']=$eve->endDate.' '.$eve->endTime;
             $e['resourceId']=$eve->tl_id;
+            $e['pid']=$eve->pid;
             array_push($events, $e);
         }
         return $events;
         // return view('dashboard.table', ['events' => $events]);
     }
     public function allEvents(){
-        $events = DB::table('tools')
-                      ->LeftJoin('events', 'events.tl_id', '=', 'tools.id')
+        $events = DB::table('events')
+                      ->LeftJoin('tools', 'tools.id', '=', 'events.tl_id')
                       ->get();
         // return ($events);
-        $tools = app('App\Http\Controllers\ToolsController')->gettools();
-        $users = app('App\Http\Controllers\UserController')->index();
-        return view('dashboard.table', ['events' => $events, 'tools' => $tools, 'users' => $users]);
+        return view('dashboard.table', ['events' => $events]);
     }
     public function userEvent(){
             $events = DB::table('tools')
@@ -206,5 +212,12 @@ class EventsController extends Controller
                             ->get();
             // return ($events);
         return view('dashboard.myBooking', ['events' => $events]);
+    }
+    public function booking(){
+        $events = DB::table('tools')
+                            ->LeftJoin('events', 'events.tl_id', '=', 'tools.id')
+                            ->where('pid','=',Auth::user()->id)
+                            ->get();
+            return ($events);
     }
 }

@@ -1,3 +1,6 @@
+@if (Auth::user())
+  <script>window.location = "/home";</script>
+@endif
 <html>
 <head>
 <title>IIT Mandi|Internet Access</title>

@@ -10,7 +10,6 @@ Homestead.json
 Homestead.yaml
 npm-debug.log
 yarn-error.log
-.env
 vendor/
 node_modules/
 npm-debug.log
@@ -25,7 +24,6 @@ public/hot
 storage/*.key
 .env.*.php
 .env.php
-.env
 Homestead.yaml
 Homestead.json
 

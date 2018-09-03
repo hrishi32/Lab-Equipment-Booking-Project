@@ -81,12 +81,12 @@ class RedirectIfAuthenticated
                 $attributes = array("employeeNumber", "sn", "givenName", "mail");
                 $data = ldap_search($ldapconn, $ldaprdn, $filter );
                 $entry = ldap_get_entries($ldapconn, $data);
-                session_start();
-                $_SESSION['username']= $username;
-                $_SESSION['fname'] = $entry[0]["givenname"][0];
-                $_SESSION['lname'] = $entry[0]["sn"][0];
-                $_SESSION['email'] = $entry[0]["mail"][0];
-                $_SESSION['id'] = $entry[0]["employeenumber"][0];
+                // session_start();
+                // $_SESSION['username']= $username;
+                // $_SESSION['fname'] = $entry[0]["givenname"][0];
+                // $_SESSION['lname'] = $entry[0]["sn"][0];
+                // $_SESSION['email'] = $entry[0]["mail"][0];
+                // $_SESSION['id'] = $entry[0]["employeenumber"][0];
                 
                 // var_dump($_SESSION);
                
@@ -109,19 +109,31 @@ class RedirectIfAuthenticated
                 }
                 if(Auth::attempt(['email' => $entry[0]["mail"][0], 'password' => ($password)]) ){
                     // echo "Auth Attempt Successful.";
+                    // if ( Auth::user()->isAdmin())
+                    //     {
+                    //         return Redirect::intended();
+                    //     }
+                    return Redirect::intended();
                 }
-                // return view('dashboard.calendar');
-                return Redirect::intended();
                 
+                // // return view('dashboard.calendar');
             }
         }
 
         else{
-            echo "Invalid Credentials";
+            return "Invalid Credentials";
                 // header("location:index.php");
         }
+        if(Auth::attempt(['email' => $username, 'password' => ($password)]) ){
+            // if ( Auth::user()->isAdmin())
+            // {
+            //     return Redirect::intended();
+            // }
+            // echo "Auth Attempt Successful.";
+            return Redirect::intended();
+        }
         if (Auth::guard($guard)->check()) {
-            return redirect('/home');
+            return Redirect::intended();
         }
 
         return $next($request);

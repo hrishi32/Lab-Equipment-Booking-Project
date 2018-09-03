@@ -55,16 +55,11 @@
                         <p>Dashboard</p>
                     </a>
                 </li> -->
+                @if(Auth::user() )
                 <li @yield('calendaractive')>
-                    <a href="/dashboard/calendar">
+                    <a href="/">
                         <i class="ti-panel"></i>
                         <p>Booking Calendar</p>
-                    </a>
-                </li>
-                <li @yield('tableactive')>
-                    <a href="/dashboard/table">
-                        <i class="ti-view-list-alt"></i>
-                        <p>Table List</p>
                     </a>
                 </li>
                 <li @yield('myBookingactive')>
@@ -73,6 +68,39 @@
                         <p>My Bookings</p>
                     </a>
                 </li>
+                <li @yield('tableactive')>
+                    <a href="/dashboard/table">
+                        <i class="ti-view-list-alt"></i>
+                        <p>All Bookings</p>
+                    </a>
+                </li>
+                <li @yield('toolTableactive')>
+                    <a href="/toolsTable">
+                        <i class="ti-view-list-alt"></i>
+                        <p>Equipments Table</p>
+                    </a>
+                </li>
+                <li @yield('toolsColoractive')>
+                    <a href="/toolsColor">
+                        <i class="ti-view-list-alt"></i>
+                        <p>Change Tools Color</p>
+                    </a>
+                </li>
+                @if(Auth::user()->admin )
+                <li @yield('userTableactive')>
+                    <a href="/usersTable">
+                        <i class="ti-view-list-alt"></i>
+                        <p>Users Table</p>
+                    </a>
+                </li>
+                <li @yield('addToolactive')>
+                    <a href="/tools/create">
+                        <i class="ti-view-list-alt"></i>
+                        <p>Add New Tool</p>
+                    </a>
+                </li>
+                @endif
+                @endif
                 <!-- <li @yield('useractive')>
                     <a href="/dashboard/user">
                         <i class="ti-user"></i>
@@ -134,7 +162,7 @@
                             </li>
                         @else
                         
-                            <li class="nav-item">
+                            <!-- <li class="nav-item">
                                 <a class="nav-link" href="{{ url('/dashboard/table') }}">{{ __('All Bookings') }}</a>
                             </li>
                             <li class="nav-item">
@@ -142,13 +170,15 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url('/dashboard/table#usertt') }}">{{ __('All Users') }}</a>
-                            </li>
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                            </li> -->
+                            <li class="nav-item">
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" >
+                                    Welcome <b>{{ Auth::user()->name }}</b>
                                 </a>
+                            </li>
+                            <li class="nav-item">
 
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                <!-- <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown"> -->
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
@@ -158,7 +188,7 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
-                                </div>
+                                <!-- </div> -->
                             </li>
                         @endguest
                     

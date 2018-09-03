@@ -27,6 +27,10 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    protected $attributes = [
+        'admin' => false
+     ];
+
     public function getId(){
         return $this->id;
     }
@@ -35,5 +39,8 @@ class User extends Authenticatable
         if (Auth::Check()){
             $id=Auth::user()->getId();
         }
+    }
+    public function isAdmin(){
+        return $this->admin;
     }
 }
